@@ -1,0 +1,24 @@
+{
+  "name": "twilio-covid-alert-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "npx nodemon ./server"
+  },
+  "author": "Luciano Buhler",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.3",
+    "mongodb-memory-server": "^6.9.3",
+    "twilio": "^3.55.0"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.7"
+  }
+}
