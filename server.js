@@ -9,6 +9,7 @@ const TwilioService = require("./messaging");
 
 const app = express();
 const port = process.env.PORT || 3000;
+const debug = process.env.DEBUG;
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -81,11 +82,13 @@ app.post("/save-subscription", async (req, res) => {
 
 // Endpoint to Send COVID-19 Alerts
 app.post("/send-alerts", async (req, res) => {
+  if (debug == "true") console.log('[server] - /send-alerts - req.body: ', req.body);
+
   //Get all users subscribed to that location
   const subscribers = await req.db
     .collection("subscriptions")
     .find({
-      location: req.body.location
+      location: req.body.locations
     })
     .toArray();
 
@@ -96,13 +99,18 @@ app.post("/send-alerts", async (req, res) => {
     );
   });
 
+  if (debug == "true") console.log('[server] - /send-alerts - messaging_requests: ', messaging_requests);
+
   const subscriber_mails = subscribers.map((subscriber) => {
     return subscriber.email;
   });
 
+  if (debug == "true") console.log('[server] - /send-alerts - subscriber_mails: ', subscriber_mails);
+
   try {
-    //Send SMS
+    // Send SMS
     const send_messages = await Promise.all(messaging_requests);
+    if (debug == "true") console.log('[server] - /send-alerts - send_messages: ', send_messages);
 
     //Send Mail
     let mailObject = {
@@ -110,6 +118,9 @@ app.post("/send-alerts", async (req, res) => {
       subject: "COVID Alerts",
       html: TwilioService.buildAlertMail(req.body)
     };
+
+    if (debug == "true") console.log('[server] - /send-alerts - mailObject: ', mailObject);
+
     await TwilioService.sendMail(mailObject);
 
     res.status(200).send({

@@ -1,6 +1,7 @@
 //Setup Twilio SMS
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTHTOKEN;
+const debug = process.env.DEBUG;
 const client = require("twilio")(accountSid, authToken);
 
 //Setup Twilio SendGrid Mail
@@ -22,6 +23,8 @@ async function sendMessage(recipient, message) {
     to: recipient
   });
 
+  if (debug == "true") console.log('[messaging] - sendMessage - sendResponse: ', sendResponse);
+
   return sendResponse;
 }
 
@@ -29,6 +32,8 @@ async function sendMessage(recipient, message) {
 async function sendMail(msgObject) {
   msgObject.from = process.env.TWILIO_SENDGRID_VERIFIED_EMAIL;
   const mailSentResponse = await sgMail.send(msgObject);
+
+  if (debug == "true") console.log('[messaging] - sendMail - mailSentResponse: ', mailSentResponse);
 
   return mailSentResponse;
 }
@@ -39,6 +44,8 @@ function buildAlertMessage(data) {
   Total Confirmed: ${data.confirmed}\n
   Total Discharged: ${data.discharged}\n
   Total Deaths: ${data.deaths}`;
+
+  if (debug == "true") console.log('[messaging] - buildAlertMessage - message: ', message);
 
   return message;
 }
@@ -77,6 +84,8 @@ function buildAlertMail(data) {
         </body>
     </html>
   `;
+
+  if (debug == "true") console.log('[messaging] - buildAlertMail - htmlMail: ', htmlMail);
 
   return htmlMail;
 }

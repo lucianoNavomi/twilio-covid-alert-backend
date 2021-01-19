@@ -12,7 +12,8 @@ const mongo = new MongoMemoryServer();
 // method that starts up and returns a reference to the database
 // gets the MongoDB connection string and uses it to create a new connection to the MongoDB database
 async function startDatabase() {
-  const mongoDBURL = await mongo.getConnectionString();
+  // const mongoDBURL = await mongo.getConnectionString(); // DEPRECATED
+  const mongoDBURL = await mongo.getUri();
   const connection = await MongoClient.connect(mongoDBURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
